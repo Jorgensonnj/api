@@ -1,0 +1,24 @@
+[package]
+name = "api"
+version = "0.1.0"
+authors = ["Nicholas Jorgenson"]
+edition = "2018"
+
+[dependencies]
+actix-web = { git = "https://github.com/actix/actix-web.git", tag = "web-v4.0.0-beta.8" }
+sqlx = { version = "0.5", features = ["runtime-actix-native-tls", "macros", "postgres", "chrono", "migrate"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1" }
+config = { version = "0.11" }
+
+[dev-dependencies]
+reqwest = { version = "0.11" }
+#actix-rt = { version = "2" }
+#tokio = { version = "1" }
+
+[lib]
+path = "src/lib.rs"
+
+[[bin]]
+name = "api"
+path = "src/main.rs"

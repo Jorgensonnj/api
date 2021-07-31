@@ -1,0 +1,12 @@
+
+# Settings
+application_port = 8000
+
+# DatabaseSettings
+[database]
+driver = "postgres"
+host = "localhost"
+port = 5432
+username = "api"
+password = "Bizowiefallout!5"
+database_name = "api_admin"
