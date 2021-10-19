@@ -1,4 +1,4 @@
-use tracing_subscriber::{fmt::{Layer, MakeWriter}, layer::SubscriberExt, EnvFilter, Registry};
+use tracing_subscriber::{fmt::{format::FmtSpan, Layer, MakeWriter}, layer::SubscriberExt, EnvFilter, Registry};
 use tracing::{Subscriber, subscriber::set_global_default};
 use tracing_log::LogTracer;
 
@@ -12,7 +12,10 @@ pub fn get_subscriber(
 
     // Create a layer as to where the log is going to be written
     let print_layer = Layer::new()
-        .with_writer(sink);
+        .compact()
+        .with_writer(sink)
+        .with_span_events(FmtSpan::ACTIVE);
+
 
    // Creates a subscriber using the filter and layer
     Registry::default()
