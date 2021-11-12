@@ -1,4 +1,4 @@
-use crate::apps::admin::routes::*;
+use crate::apps::{admin::routes::*, users::routes::*};
 use actix_web::{web, dev::Server, App, HttpServer};
 use tracing_actix_web::TracingLogger;
 use sqlx::{Pool, Postgres};
@@ -13,6 +13,11 @@ pub fn server(listener: TcpListener, pool: Pool<Postgres>) -> Result<Server, Err
         App::new()
             .wrap(TracingLogger::default())
             .route("/status", web::get().to(status))
+            .route("/users", web::post().to(create_user))
+            .route("/users", web::get().to(read_users))
+            .route("/users/{user_id}", web::get().to(read_user))
+            .route("/users/{user_id}", web::put().to(update_user))
+            .route("/users/{user_id}", web::delete().to(delete_user))
             .app_data(pool.clone())
         }
     )

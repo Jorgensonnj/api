@@ -1,4 +1,3 @@
-
 use config::{Config, ConfigError, File};
 
 #[derive(serde::Deserialize)]
@@ -48,8 +47,12 @@ pub fn get_config() -> Result<Settings, ConfigError> {
     // Initialize
     let mut settings = Config::default();
 
-    // Add configuration values from a file named "configuration".
-    settings.merge(File::with_name("src/settings.toml"))?;
+    // Start at the root directory
+    let mut root_dir = std::env::var("CARGO_MANIFEST_DIR").unwrap();
+    root_dir.push_str("/src/settings.toml");
+
+    // Add configuration values from a file
+    settings.merge(File::with_name(&root_dir))?;
 
     settings.try_into()
 }
