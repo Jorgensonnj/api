@@ -1,0 +1,16 @@
+CREATE TABLE IF NOT EXISTS users (
+    user_id SERIAL PRIMARY KEY,
+    username VARCHAR ( 50 ) UNIQUE NOT NULL,
+    password VARCHAR ( 50 ) NOT NULL,
+    email VARCHAR ( 255 ) UNIQUE,
+    created_on TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    last_login TIMESTAMP,
+    discarded BOOLEAN NOT NULL DEFAULT FALSE
+);
+
+-- INSERT INTO users (username, password, email)
+-- VALUES
+--     ('root', 'root', 'root@api.com'),
+--     ('nicholas', 'test', 'nicholas@api.com');
+
+-- DROP TABLE IF EXISTS users;
