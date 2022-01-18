@@ -1,14 +1,33 @@
 //use std::fmt::{Display, Formatter, Result};
+use sqlx::{FromRow, types::chrono::{DateTime, Utc}};
 use serde::{Serialize, Deserialize};
-use sqlx::FromRow;
 
 #[derive(Serialize, Deserialize, FromRow, Debug)]
 pub struct User {
-    pub user_id: String,
-    pub email: String,
+    pub user_id: i32,
     pub username: String,
     pub password: String,
-    pub role: String,
+    pub email: String,
+    pub created_on: DateTime<Utc>,
+    pub last_login: Option<DateTime<Utc>>,
+    pub discarded: bool
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct JsonUser {
+    pub username: Option<String>,
+    pub password: Option<String>,
+    pub email: Option<String>,
+    pub discarded: Option<bool>
+}
+
+impl JsonUser {
+    pub fn get_discarded(&self) -> bool {
+        match self.discarded {
+            Some(discarded) => discarded,
+            None => false
+        }
+    }
 }
 
 //impl Role {

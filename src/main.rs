@@ -1,17 +1,19 @@
 use api::{config::get_config, server::server, telemetry::{get_subscriber, init_subscriber}};
 use std::net::TcpListener;
-use sqlx::{Pool, Any};
+use sqlx::{Pool, Postgres};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     // log
-    let subscriber = get_subscriber("info".into(), std::io::stdout);
+    // Options: info, error
+    let subscriber = get_subscriber("error".into(), std::io::stdout);
     init_subscriber(subscriber);
 
     // configure
     let configuration = get_config().expect("Failed to read configuration");
-    let result_pool = Pool::<Any>::connect(&configuration.database.connection_db_string()).await;
-        //.expect("Failed to connect to database.");
+
+    //println!("{}", &configuration.database.connection_db_string());
+    let result_pool = Pool::<Postgres>::connect(&configuration.database.connection_db_string()).await;
 
     // bind
     let address = format!("0.0.0.0:{}", configuration.application_port);

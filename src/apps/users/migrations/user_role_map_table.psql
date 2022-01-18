@@ -2,16 +2,18 @@ CREATE TABLE IF NOT EXISTS user_role_map (
     user_role_map_id SERIAL PRIMARY KEY,
     user_id INT NOT NULL,
     user_role_id INT NOT NULL,
-    grant_date TIMESTAMP,
+    grant_date TIMESTAMPTZ,
     FOREIGN KEY (user_role_id)
         REFERENCES user_roles (user_role_id),
     FOREIGN KEY (user_id)
         REFERENCES users (user_id)
 );
 
--- INSERT INTO user_role_map (user_id, user_role_id)
--- VALUES
---     (1, 1),
---     (2, 2);
+ALTER TABLE user_role_map OWNER TO api;
+
+INSERT INTO user_role_map (user_id, user_role_id)
+VALUES
+    (1, 1),
+    (2, 2);
 
 -- DROP TABLE IF EXISTS user_role_map;

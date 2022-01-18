@@ -4,9 +4,11 @@ CREATE TABLE IF NOT EXISTS user_roles (
    discarded BOOLEAN NOT NULL DEFAULT FALSE
 );
 
--- INSERT INTO user_roles (user_role_name)
--- VALUES
---     ('admin'),
---     ('standard');
+ALTER TABLE user_roles OWNER TO api;
+
+INSERT INTO user_roles (user_role_name)
+VALUES
+    ('admin'),
+    ('standard');
 
 -- DROP TABLE IF EXISTS user_roles;
