@@ -12,12 +12,14 @@ async fn main() -> std::io::Result<()> {
     // configure
     let configuration = get_config().expect("Failed to read configuration");
 
-    //println!("{}", &configuration.database.connection_db_string());
+    // DB connect
     let result_pool = Pool::<Postgres>::connect(&configuration.database.connection_db_string()).await;
 
     // bind
     let address = format!("0.0.0.0:{}", configuration.application_port);
     let listener = TcpListener::bind(address).expect("Failed to bind port");
+
+    println!("\nListening at http://{} ...", listener.local_addr().unwrap() );
 
     // run
     server(listener, result_pool)

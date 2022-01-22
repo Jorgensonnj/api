@@ -1,4 +1,4 @@
-use crate::apps::{admin::routes::*, users::routes::*};
+use crate::modules::{admin::api::routes::*, users::api::routes::*};
 use actix_web::{web, dev::Server, App, HttpServer};
 use tracing_actix_web::TracingLogger;
 use sqlx::{Pool, Postgres, Error};
@@ -36,3 +36,5 @@ pub fn server(listener: TcpListener, result_pool: Result<Pool<Postgres>, Error>)
 
     Ok(server)
 }
+
+
