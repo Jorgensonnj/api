@@ -3,7 +3,7 @@ use actix_web::{web, web::ServiceConfig};
 
 pub fn user_api(cfg: &mut ServiceConfig) {
     cfg.service(
-        web::scope("/users")
+        web::scope("/v1/users")
             .service(
                 web::resource("")
                     .route(web::post().to(create_user))

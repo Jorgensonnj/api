@@ -5,8 +5,9 @@ authors = ["Nicholas Jorgenson"]
 edition = "2018"
 
 [dependencies]
-actix-http = "3.0.0-beta.19"
-actix-web = "4.0.0-beta.20"
+actix-http = "3.0.0-rc.2"
+actix-web = "4.0.0-rc.3"
+actix-files = "0.6.0-beta.16"
 
 sqlx = { version = "0.5", features = ["runtime-actix-native-tls", "any", "macros", "postgres", "chrono", "migrate"] }
 
@@ -14,12 +15,13 @@ tracing = { version = "0.1", features = ["attributes"] }
 tracing-log = "0.1"
 tracing-futures = "0.2"
 tracing-subscriber = { version = "0.2", features = ["registry"] }
-tracing-actix-web = "0.5.0-beta.10"
+tracing-actix-web = "0.5.0-rc.3"
 
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 config = "0.11"
 chrono = { version = "0.4", features = ["serde"] }
+uuid = { version = "0.8", features = ["serde", "v4"] }
 
 [dev-dependencies]
 reqwest = "0.11.4"

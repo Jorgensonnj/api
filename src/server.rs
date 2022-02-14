@@ -1,4 +1,4 @@
-use crate::modules::{admin::api::config::admin_api, users::api::config::user_api};
+use crate::modules::{api_config::api, website::website_config::website};
 use actix_web::{web, dev::Server, App, HttpServer};
 use tracing_actix_web::TracingLogger;
 use sqlx::{Pool, Postgres, Error};
@@ -13,8 +13,8 @@ pub fn server(listener: TcpListener, result_pool: Result<Pool<Postgres>, Error>)
     let server = HttpServer::new(move || {
         App::new()
             .wrap(TracingLogger::default())
-            .configure(admin_api)
-            .configure(user_api)
+            .configure(api)
+            .configure(website)
             .app_data(data_pool.clone())
         }
     )
