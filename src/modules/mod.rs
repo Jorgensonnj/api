@@ -1,5 +1,5 @@
 
-pub mod admin;
-pub mod users;
-pub mod website;
-pub mod api_config;
+pub mod admin_module;
+pub mod users_module;
+pub mod website_module;
+pub mod module_config;

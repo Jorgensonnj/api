@@ -1,5 +1,5 @@
 use actix_web::{web::{Json, Data, Path}, HttpRequest, HttpResponse, Responder};
-use crate::modules::users::api::models::users::*;
+use crate::modules::users_module::api::models::users::*;
 use sqlx::{Pool, Postgres, Error};
 use tracing::instrument;
 

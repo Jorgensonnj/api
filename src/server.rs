@@ -1,4 +1,4 @@
-use crate::modules::{api_config::api, website::website_config::website};
+use crate::modules::{module_config::api, website_module::website_config::website};
 use actix_web::{web, dev::Server, App, HttpServer};
 use tracing_actix_web::TracingLogger;
 use sqlx::{Pool, Postgres, Error};

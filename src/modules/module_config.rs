@@ -1,4 +1,7 @@
-use crate::modules::{admin::api::admin_config::admin_api, users::api::users_config::user_api};
+use crate::modules::{
+    admin_module::api::admin_config::admin_api,
+    users_module::api::users_config::user_api
+};
 use actix_web::{web, web::ServiceConfig};
 
 pub fn api(cfg: &mut ServiceConfig) {

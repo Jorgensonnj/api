@@ -1,4 +1,4 @@
-use crate::modules::website::routes::index;
+use crate::modules::website_module::routes::index;
 //use actix_files::File;
 use actix_web::{web, web::ServiceConfig};
 

@@ -1,4 +1,4 @@
-use crate::modules::admin::api::routes::*;
+use crate::modules::admin_module::api::routes::*;
 use actix_web::{web, web::ServiceConfig};
 
 pub fn admin_api(cfg: &mut ServiceConfig) { 
