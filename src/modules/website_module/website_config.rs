@@ -4,7 +4,7 @@ use actix_web::{web, web::ServiceConfig};
 
 pub fn website(cfg: &mut ServiceConfig) {
     cfg.service(
-        web::resource("/")
+        web::resource("")
             .route(web::get().to(index)
         )
     );
