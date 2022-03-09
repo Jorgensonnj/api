@@ -2,8 +2,16 @@ use config::{Config, ConfigError, File};
 
 #[derive(serde::Deserialize)]
 pub struct Settings {
+    pub server: ServerSettings,
     pub database: DatabaseSettings,
-    pub application_port: u16
+    pub telemetry: TelemetrySettings,
+}
+
+#[derive(serde::Deserialize)]
+pub struct ServerSettings {
+    pub application_port: u16,
+    pub key_path: String,
+    pub cert_path: String,
 }
 
 #[derive(serde::Deserialize)]
@@ -14,6 +22,11 @@ pub struct DatabaseSettings {
     pub host: String,
     pub port: u16,
     pub database_name: String
+}
+
+#[derive(serde::Deserialize)]
+pub struct TelemetrySettings {
+    pub env_filter: String
 }
 
 impl DatabaseSettings {
@@ -48,11 +61,11 @@ pub fn get_config() -> Result<Settings, ConfigError> {
     let mut settings = Config::default();
 
     // Start at the root directory
-    let mut root_dir = std::env::var("CARGO_MANIFEST_DIR").unwrap();
-    root_dir.push_str("/src/settings.toml");
+    let mut file_path = std::env::var("CARGO_MANIFEST_DIR").unwrap();
+    file_path.push_str("/src/settings.toml");
 
     // Add configuration values from a file
-    settings.merge(File::with_name(&root_dir))?;
+    settings.merge(File::with_name(&file_path))?;
 
     settings.try_into()
 }

@@ -1,10 +1,15 @@
 use crate::modules::module_config::{api_module,website_module};
 use actix_web::{web, dev::Server, App, HttpServer};
+use rustls::ServerConfig;
 use tracing_actix_web::TracingLogger;
 use sqlx::{Pool, Postgres, Error};
 use std::net::TcpListener;
 
-pub fn server(listener: TcpListener, result_pool: Result<Pool<Postgres>, Error>) -> Result<Server, Error> {
+pub fn server(
+    listener: TcpListener,
+    server_config: ServerConfig,
+    result_pool: Result<Pool<Postgres>, Error>
+) -> Result<Server, Error> {
 
     // Wrap into data
     let data_pool = web::Data::new(result_pool);
@@ -18,7 +23,7 @@ pub fn server(listener: TcpListener, result_pool: Result<Pool<Postgres>, Error>)
             .app_data(data_pool.clone())
         }
     )
-    .listen(listener)?
+    .listen_rustls(listener, server_config)?
     .run();
 
     Ok(server)

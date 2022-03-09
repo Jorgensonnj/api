@@ -1,4 +1,9 @@
-use tracing_subscriber::{fmt::{format::FmtSpan, Layer, MakeWriter}, layer::SubscriberExt, EnvFilter, Registry};
+use tracing_subscriber::{
+    fmt::{format::FmtSpan, Layer, MakeWriter},
+    layer::SubscriberExt,
+    EnvFilter,
+    Registry
+};
 use tracing::{Subscriber, subscriber::set_global_default};
 use tracing_log::LogTracer;
 
