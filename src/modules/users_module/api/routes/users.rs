@@ -1,5 +1,6 @@
 use actix_web::{web::{Json, Data, Path}, HttpRequest, HttpResponse, Responder};
-use crate::modules::users_module::api::models::{users, users::JsonUser};
+use crate::modules::users_module::api::models::users::JsonUser;
+use crate::modules::users_module::api::actions;
 use sqlx::{Pool, Postgres, Error};
 use tracing::instrument;
 
@@ -17,11 +18,11 @@ pub async fn create_user(
     match result_pool {
         Ok(pool) => {
 
-            // get all users query
-            let result = users::create(pool, payload.into_inner()).await;
+            // create user
+            let create_result = actions::create(pool, &payload).await;
 
-            match result {
-                Ok(_) => HttpResponse::Created().finish(),
+            match create_result {
+                Ok(user) => HttpResponse::Ok().json(user),
                 Err(_) => HttpResponse::InternalServerError().finish()
             }
         },
@@ -46,11 +47,11 @@ pub async fn read_users(
     match result_pool {
         Ok(pool) => {
 
-            // get all users query
-            let result = users::read_all(pool).await;
+            // get all users
+            let read_result = actions::read_all(pool).await;
 
-            match result {
-                Ok(r) => HttpResponse::Ok().json(r),
+            match read_result {
+                Ok(users) => HttpResponse::Ok().json(users),
                 Err(_) => HttpResponse::InternalServerError().finish()
             }
         },
@@ -77,11 +78,11 @@ pub async fn read_user(
     match result_pool {
         Ok(pool) => {
 
-            // get one user query
-            let result = users::read_one(pool, user_id).await;
+            // get user
+            let read_result = actions::read_one(pool, user_id).await;
 
-            match result {
-                Ok(r) => HttpResponse::Ok().json(r),
+            match read_result {
+                Ok(user) => HttpResponse::Ok().json(user),
                 Err(_) => HttpResponse::InternalServerError().finish()
             }
        },
@@ -109,28 +110,28 @@ pub async fn update_user(
     match result_pool {
         Ok(pool) => {
 
-            // get one user query
-            let option_user = users::read_one(pool, user_id).await;
+            // get one user
+            let option_user = actions::read_one(pool, user_id).await;
 
             match option_user {
                 Ok(user) => {
 
-                let mut jsonuser = payload.into_inner();
+                let mut json_user = payload.into_inner();
 
-                jsonuser.username  =
-                    if let Some(u) = jsonuser.username  { Some(u) } else { Some(user.username)  };
-                jsonuser.password  =
-                    if let Some(p) = jsonuser.password  { Some(p) } else { Some(user.password)  };
-                jsonuser.email     =
-                    if let Some(e) = jsonuser.email     { Some(e) } else { Some(user.email)     };
-                jsonuser.discarded =
-                    if let Some(d) = jsonuser.discarded { Some(d) } else { Some(user.discarded) };
+                json_user.username  =
+                    if let Some(u) = json_user.username  { Some(u) } else { Some(user.username)  };
+                json_user.password  =
+                    if let Some(p) = json_user.password  { Some(p) } else { Some(user.password)  };
+                json_user.email     =
+                    if let Some(e) = json_user.email     { Some(e) } else { Some(user.email)     };
+                json_user.discarded =
+                    if let Some(d) = json_user.discarded { Some(d) } else { Some(user.discarded) };
 
-                // get all users query
-                let result = users::update(pool, user_id, jsonuser).await;
+                // update user
+                let update_result = actions::update(pool, user_id, json_user).await;
 
-                    match result {
-                        Ok(_) => HttpResponse::Ok().finish(),
+                    match update_result {
+                        Ok(user) => HttpResponse::Ok().json(user),
                         Err(_) => HttpResponse::InternalServerError().finish()
                     }
                 },
@@ -165,10 +166,10 @@ pub async fn delete_user(
     match result_pool {
         Ok(pool) => {
 
-            // delete map query
-            let result_one = users::delete(pool, user_id).await;
+            // delete user
+            let delete_result = actions::delete(pool, user_id).await;
 
-            match result_one {
+            match delete_result {
                 Ok(_) => HttpResponse::Ok().finish(),
                 Err(_) => HttpResponse::InternalServerError().finish()
             }

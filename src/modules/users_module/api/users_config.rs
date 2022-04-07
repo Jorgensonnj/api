@@ -12,7 +12,7 @@ pub fn user_api(cfg: &mut ServiceConfig) {
             .service(
                 web::resource("/{user_id}")
                     .route(web::get().to(read_user))
-                    .route(web::put().to(update_user))
+                    .route(web::patch().to(update_user))
                     .route(web::delete().to(delete_user))
             )
     );
