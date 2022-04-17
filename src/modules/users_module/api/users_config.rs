@@ -1,4 +1,4 @@
-use crate::modules::users_module::api::routes::*;
+use crate::modules::users_module::api::routes::users::*;
 use actix_web::{web, web::ServiceConfig};
 
 pub fn user_api(cfg: &mut ServiceConfig) {

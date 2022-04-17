@@ -21,7 +21,7 @@ async fn main() -> std::io::Result<()> {
     init_subscriber(subscriber);
 
     // encryption
-    let server_config = get_encryption(
+    let encryption = get_encryption(
         configuration.server.key_path,
         configuration.server.cert_path,
     );
@@ -38,7 +38,7 @@ async fn main() -> std::io::Result<()> {
     println!("\nListening at http://{} ...", listener.local_addr().unwrap() );
 
     // run
-    server(listener, server_config, result_pool)
+    server(listener, encryption, result_pool)
         .unwrap()
         .await
 }

@@ -1,7 +1,8 @@
 use crate::modules::{
     admin_module::api::admin_config::admin_api,
     users_module::api::users_config::user_api,
-    website_module::website_config::website
+    website_module::website_config::website,
+    auth_module::auth_config::auth
 };
 use actix_web::{web, web::ServiceConfig};
 
@@ -15,7 +16,8 @@ pub fn api_module(cfg: &mut ServiceConfig) {
 
 pub fn website_module(cfg: &mut ServiceConfig) {
     cfg.service(
-        web::scope("/")
+        web::scope("")
+            .configure(auth)
             .configure(website)
     );
 }

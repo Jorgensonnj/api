@@ -18,8 +18,8 @@ pub fn server(
     let server = HttpServer::new(move || {
         App::new()
             .wrap(TracingLogger::default())
-            .configure(api_module)
             .configure(website_module)
+            .configure(api_module)
             .app_data(data_pool.clone())
         }
     )
