@@ -1,4 +1,4 @@
-use config::{Config, ConfigError, File};
+use config::{Config, ConfigError, File, FileFormat};
 
 #[derive(serde::Deserialize)]
 pub struct Settings {
@@ -57,15 +57,20 @@ impl DatabaseSettings {
 }
 
 pub fn get_config() -> Result<Settings, ConfigError> {
-    // Initialize
-    let mut settings = Config::default();
 
     // Start at the root directory
     let mut file_path = std::env::var("CARGO_MANIFEST_DIR").unwrap();
     file_path.push_str("/src/settings.toml");
 
-    // Add configuration values from a file
-    settings.merge(File::with_name(&file_path))?;
+    // Build configuration
+    let config = Config::builder()
+        .set_default("default", "1")?
+        .add_source(File::new(&file_path, FileFormat::Toml))
+        .build()
+        .expect("Configuration failed to build");
 
-    settings.try_into()
+    // Convert configuration into settings
+    let convert_config: Result<Settings, ConfigError> = config.try_deserialize();
+
+    convert_config
 }

@@ -7,10 +7,13 @@ use tracing_subscriber::{
 use tracing::{Subscriber, subscriber::set_global_default};
 use tracing_log::LogTracer;
 
-pub fn get_subscriber(
+pub fn get_subscriber<Sink>(
     env_filter: String,
-    sink: impl MakeWriter + Send + Sync + 'static,
-) -> impl Subscriber + Send + Sync {
+    sink: Sink,
+) -> impl Subscriber + Send + Sync
+where
+    Sink: for<'a> MakeWriter<'a> + Send + Sync + 'static,
+{
     // Get the logging level from the env if not specified
     let filter_layer = EnvFilter::try_from_default_env()
         .unwrap_or_else(|_| EnvFilter::new(env_filter));
