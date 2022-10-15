@@ -1,9 +1,9 @@
-use crate::modules::users_module::api::routes::users::*;
+use super::routes::users::*;
 use actix_web::{web, web::ServiceConfig};
 
 pub fn user_api(cfg: &mut ServiceConfig) {
     cfg.service(
-        web::scope("/v1/users")
+        web::scope("/users")
             .service(
                 web::resource("")
                     .route(web::post().to(create_user))

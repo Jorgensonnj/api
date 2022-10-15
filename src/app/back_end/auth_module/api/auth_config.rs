@@ -1,7 +1,7 @@
-use crate::modules::auth_module::routes::auth::*;
 use actix_web::{web, web::ServiceConfig};
+use super::routes::auth::*;
 
-pub fn auth(cfg: &mut ServiceConfig) { 
+pub fn auth_api(cfg: &mut ServiceConfig) { 
     cfg.service(
         web::resource("/login")
             .route(web::get().to(login))

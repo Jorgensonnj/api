@@ -1,5 +1,5 @@
 use sqlx::{Pool, Postgres, Error, postgres::PgQueryResult};
-use crate::modules::users_module::api::models::users::*;
+use super::super::models::users::*;
 
 pub async fn create(pool: &Pool<Postgres>, json_user: &JsonUser) -> Result<User, Error> {
     sqlx::query_as::<_, User>(

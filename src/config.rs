@@ -60,7 +60,7 @@ pub fn get_config() -> Result<Settings, ConfigError> {
 
     // Start at the root directory
     let mut file_path = std::env::var("CARGO_MANIFEST_DIR").unwrap();
-    file_path.push_str("/src/settings.toml");
+    file_path.push_str("/settings.toml");
 
     // Build configuration
     let config = Config::builder()

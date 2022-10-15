@@ -1,6 +1,5 @@
 use actix_web::{web::{Json, Data, Path}, HttpRequest, HttpResponse, Responder};
-use crate::modules::users_module::api::models::users::JsonUser;
-use crate::modules::users_module::api::actions;
+use super::super::{ models::users::JsonUser, actions};
 use sqlx::{Pool, Postgres, Error};
 use tracing::instrument;
 

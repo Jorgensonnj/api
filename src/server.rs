@@ -1,4 +1,4 @@
-use crate::modules::module_config::{api_module,website_module};
+use crate::app::app_config::{front_end_config, back_end_config};
 use actix_web::{web, dev::Server, App, HttpServer};
 use rustls::ServerConfig;
 use tracing_actix_web::TracingLogger;
@@ -18,8 +18,8 @@ pub fn server(
     let server = HttpServer::new(move || {
         App::new()
             .wrap(TracingLogger::default())
-            .configure(website_module)
-            .configure(api_module)
+            .configure(back_end_config)
+            .configure(front_end_config)
             .app_data(data_pool.clone())
         }
     )
@@ -28,5 +28,3 @@ pub fn server(
 
     Ok(server)
 }
-
-
