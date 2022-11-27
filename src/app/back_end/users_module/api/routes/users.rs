@@ -141,7 +141,7 @@ pub async fn update_user(
                 }
             }
         },
-        Err(error) => { 
+        Err(error) => {
             // no db was found
             tracing::error!("no database found: {:?}", error);
             HttpResponse::ServiceUnavailable().finish()

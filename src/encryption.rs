@@ -3,8 +3,8 @@ use rustls_pemfile::{certs, pkcs8_private_keys};
 use std::{fs::File, io::BufReader};
 
 pub fn get_encryption(
-    key: String,
-    cert: String
+    key: &String,
+    cert: &String
 ) -> ServerConfig {
 
     // Start at the root directory
@@ -13,8 +13,8 @@ pub fn get_encryption(
     let mut cert_path = root_path.clone();
     let mut key_path = root_path.clone();
 
-    cert_path.push_str(&cert);
-    key_path.push_str(&key);
+    cert_path.push_str(cert.as_ref());
+    key_path.push_str(key);
 
     // load ssl keys
     let config = ServerConfig::builder()

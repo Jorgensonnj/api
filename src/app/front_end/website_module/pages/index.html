@@ -13,7 +13,27 @@
   </head>
 
   <body>
-    <h1>Hello World!</h1>
-    <h1>Hello World!</h1>
+
+    <div>
+      <h2>Submit Data Without A Form</h2>
+
+      <label for="username">Username:</label>
+      <input type='text' id='username' placeholder='Username...'>
+      <br>
+      <label for="password">Password:</label>
+      <input type='text' id='password' placeholder='Password...'>
+      <br>
+      <button
+        id='submit'
+        onclick="post_data('/api/v0/login', { answer: 42 }).then((data) => { console.log(data); });"
+      >Login</button>
+
+      <script src="scripts/script.js"></script>
+
+      <div id='server_response'>
+        <!-- server response -->
+      </div>
+    </div>
+
   </body>
 </html>

@@ -14,17 +14,11 @@ async fn main() -> std::io::Result<()> {
     let configuration = get_config().expect("Failed to read configuration");
 
     // log
-    let subscriber = get_subscriber(
-        configuration.telemetry.env_filter,
-        std::io::stdout
-    );
+    let subscriber = get_subscriber( &configuration.telemetry.env_filter, std::io::stdout );
     init_subscriber(subscriber);
 
     // encryption
-    let encryption = get_encryption(
-        configuration.server.key_path,
-        configuration.server.cert_path,
-    );
+    let encryption = get_encryption( &configuration.server.key_path, &configuration.server.cert_path );
 
     // DB connect
     let result_pool = Pool::<Postgres>::connect(
@@ -32,13 +26,13 @@ async fn main() -> std::io::Result<()> {
     ).await;
 
     // bind
-    let address = format!("0.0.0.0:{}", configuration.server.application_port);
+    let address = format!("{}:{}", configuration.server.host, configuration.server.port);
     let listener = TcpListener::bind(address).expect("Failed to bind port");
 
-    println!("\nListening at http://{} ...", listener.local_addr().unwrap() );
+    println!("\nListening at https://{} ...", listener.local_addr().unwrap() );
 
     // run
-    server(listener, encryption, result_pool)
+    server(listener, encryption, result_pool, configuration)
         .unwrap()
         .await
 }

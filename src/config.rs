@@ -1,20 +1,55 @@
 use config::{Config, ConfigError, File, FileFormat};
+use std::collections::HashMap;
 
-#[derive(serde::Deserialize)]
+#[derive(serde::Deserialize, Debug)]
 pub struct Settings {
     pub server: ServerSettings,
     pub database: DatabaseSettings,
     pub telemetry: TelemetrySettings,
+    pub modules: HashMap<String, ModuleSettings>,
 }
 
-#[derive(serde::Deserialize)]
+#[derive(serde::Deserialize, Debug)]
 pub struct ServerSettings {
-    pub application_port: u16,
+    pub driver: String,
+    pub host: String,
+    pub port: u16,
     pub key_path: String,
     pub cert_path: String,
 }
 
-#[derive(serde::Deserialize)]
+impl ServerSettings {
+    // Server string
+    pub fn address_string(&self) -> String {
+        format!(
+            "{}://{}:{}",
+            self.driver,
+            self.host,
+            self.port,
+        )
+    }
+}
+
+#[derive(serde::Deserialize, Debug)]
+pub struct ModuleSettings {
+    pub driver: String,
+    pub host: String,
+    pub port: u16,
+}
+
+impl ModuleSettings {
+    // Module connection string
+    pub fn address_string(&self) -> String {
+        format!(
+            "{}://{}:{}/",
+            self.driver,
+            self.host,
+            self.port
+        )
+    }
+}
+
+#[derive(serde::Deserialize, Debug)]
 pub struct DatabaseSettings {
     pub driver: String,
     pub username: String,
@@ -22,11 +57,6 @@ pub struct DatabaseSettings {
     pub host: String,
     pub port: u16,
     pub database_name: String
-}
-
-#[derive(serde::Deserialize)]
-pub struct TelemetrySettings {
-    pub env_filter: String
 }
 
 impl DatabaseSettings {
@@ -56,6 +86,11 @@ impl DatabaseSettings {
     }
 }
 
+#[derive(serde::Deserialize, Debug)]
+pub struct TelemetrySettings {
+    pub env_filter: String
+}
+
 pub fn get_config() -> Result<Settings, ConfigError> {
 
     // Start at the root directory
@@ -72,5 +107,5 @@ pub fn get_config() -> Result<Settings, ConfigError> {
     // Convert configuration into settings
     let convert_config: Result<Settings, ConfigError> = config.try_deserialize();
 
-    convert_config
+    return convert_config;
 }

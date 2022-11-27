@@ -1,17 +1,17 @@
 use actix_web::{web, web::ServiceConfig};
-use super::routes::auth::*;
+use super::routes::auth_routes::*;
 
-pub fn auth_api(cfg: &mut ServiceConfig) { 
+pub fn auth_api(cfg: &mut ServiceConfig) {
     cfg.service(
         web::resource("/login")
-            .route(web::get().to(login))
+            .route(web::post().to(login))
     )
     .service(
         web::resource("/logout")
-            .route(web::get().to(logout))
+            .route(web::post().to(logout))
     )
     .service(web::resource("/refresh")
-            .route(web::get().to(refresh))
+            .route(web::post().to(refresh))
     );
 }
 
