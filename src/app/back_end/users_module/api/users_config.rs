@@ -1,4 +1,4 @@
-use super::routes::users::*;
+use super::routes::user_routes::*;
 use actix_web::{web, web::ServiceConfig};
 
 pub fn user_api(cfg: &mut ServiceConfig) {

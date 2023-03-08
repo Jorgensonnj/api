@@ -1,5 +1,5 @@
 use actix_web::{web::{Json, Data, Path}, HttpRequest, HttpResponse, Responder};
-use super::super::{ models::users::JsonUser, actions};
+use super::super::{ models::user_models::JsonUser, actions};
 use sqlx::{Pool, Postgres, Error};
 use tracing::instrument;
 
@@ -54,7 +54,7 @@ pub async fn read_users(
                 Err(_) => HttpResponse::InternalServerError().finish()
             }
         },
-        Err(error) => { 
+        Err(error) => {
             // no db was found
             tracing::error!("no database found: {:?}", error);
             HttpResponse::ServiceUnavailable().finish()
@@ -147,7 +147,6 @@ pub async fn update_user(
             HttpResponse::ServiceUnavailable().finish()
         }
     }
-
 }
 
 // /users/{user_id}
@@ -173,7 +172,7 @@ pub async fn delete_user(
                 Err(_) => HttpResponse::InternalServerError().finish()
             }
         },
-        Err(error) => { 
+        Err(error) => {
             // no db was found
             tracing::error!("no database found: {:?}", error);
             HttpResponse::ServiceUnavailable().finish()

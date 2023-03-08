@@ -1,18 +1,24 @@
-use actix_web::{HttpRequest, HttpResponse, Responder, web::Data};
+use actix_web::{HttpRequest, HttpResponse, Responder, web::{Data, Json}};
+use sqlx::{Pool, Postgres, Error};
 use tracing::instrument;
 use serde_json::Value;
 
 use crate::config::Settings;
-use super::super::actions::auth_actions::*;
+use super::super::{
+    actions::auth_actions::*,
+    models::auth_models::*
+};
 use std::collections::HashMap;
 
 //use std::collections::HashMap;
 //use reqwest::Client;
 
-
-
 #[instrument]
-pub async fn login(_req: HttpRequest, data_config: Data<Settings> ) -> impl Responder {
+pub async fn login(
+    _req: HttpRequest, data_config: Data<Settings>,
+    data_pool: Data<Result<Pool<Postgres>, Error>>,
+    payload: Json<AuthJsonUser>
+) -> impl Responder {
 
     let module_setting = data_config.get_ref().modules.get(&"auth_module".to_string());
     let address = match module_setting {
@@ -20,7 +26,9 @@ pub async fn login(_req: HttpRequest, data_config: Data<Settings> ) -> impl Resp
         None => "http://localhost".to_string()
     };
 
-    let _v = login_action(&address).await.unwrap_or(HashMap::new());
+    let v = login_action(&address).await.unwrap_or(HashMap::new());
+
+    println!("{:?}", v);
 
     let value: Value =
         serde_json::from_str(r#"{ "test" : "login"}"#)

@@ -41,7 +41,7 @@ impl ModuleSettings {
     // Module connection string
     pub fn address_string(&self) -> String {
         format!(
-            "{}://{}:{}/",
+            "{}://{}:{}",
             self.driver,
             self.host,
             self.port

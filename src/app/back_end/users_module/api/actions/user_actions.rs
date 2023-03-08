@@ -1,5 +1,5 @@
 use sqlx::{Pool, Postgres, Error, postgres::PgQueryResult};
-use super::super::models::users::*;
+use super::super::models::user_models::*;
 
 pub async fn create(pool: &Pool<Postgres>, json_user: &JsonUser) -> Result<User, Error> {
     sqlx::query_as!(
