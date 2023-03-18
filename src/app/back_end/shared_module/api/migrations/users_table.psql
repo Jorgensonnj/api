@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS users (
     discarded BOOLEAN NOT NULL DEFAULT FALSE
 );
 
-ALTER TABLE users OWNER TO api;
+-- ALTER TABLE users OWNER TO api;
 
 INSERT INTO users (username, password, email)
 VALUES

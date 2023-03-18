@@ -6,7 +6,7 @@ use serde_json::Value;
 use crate::config::Settings;
 use super::super::{
     actions::auth_actions::*,
-    models::auth_models::*
+    super::super::shared_module::api::models::*
 };
 use std::collections::HashMap;
 
@@ -17,7 +17,7 @@ use std::collections::HashMap;
 pub async fn login(
     _req: HttpRequest, data_config: Data<Settings>,
     data_pool: Data<Result<Pool<Postgres>, Error>>,
-    payload: Json<AuthJsonUser>
+    payload: Json<JsonUser>
 ) -> impl Responder {
 
     let module_setting = data_config.get_ref().modules.get(&"auth_module".to_string());

@@ -1,5 +1,8 @@
 use actix_web::{web::{Json, Data, Path}, HttpRequest, HttpResponse, Responder};
-use super::super::{ models::user_models::JsonUser, actions};
+use super::super::{
+    actions,
+    super::super::shared_module::api::models::*
+};
 use sqlx::{Pool, Postgres, Error};
 use tracing::instrument;
 
