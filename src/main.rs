@@ -1,7 +1,7 @@
 use api::{
     config::get_config,
     server::server,
-    encryption::get_encryption,
+    //encryption::get_encryption,
     telemetry::{get_subscriber, init_subscriber}
 };
 use std::net::TcpListener;
@@ -18,7 +18,7 @@ async fn main() -> std::io::Result<()> {
     init_subscriber(subscriber);
 
     // encryption
-    let encryption = get_encryption( &configuration.server.key_path, &configuration.server.cert_path );
+    //let encryption = get_encryption( &configuration.server.key_path, &configuration.server.cert_path );
 
     // DB connect
     let result_pool = Pool::<Postgres>::connect(
@@ -32,7 +32,7 @@ async fn main() -> std::io::Result<()> {
     println!("\nListening at https://{} ...", listener.local_addr().unwrap() );
 
     // run
-    server(listener, encryption, result_pool, configuration)
+    server(listener, /* encryption, */ result_pool, configuration)
         .unwrap()
         .await
 }

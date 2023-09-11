@@ -1,7 +1,7 @@
 use actix_web::{web, web::ServiceConfig};
 use super::routes::auth_routes::*;
 
-pub fn auth_api(cfg: &mut ServiceConfig) {
+pub fn auth_api_service(cfg: &mut ServiceConfig) {
     cfg.service(
         web::resource("/login")
             .route(web::post().to(login))

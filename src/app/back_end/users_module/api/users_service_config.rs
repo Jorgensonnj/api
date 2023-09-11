@@ -1,7 +1,7 @@
 use super::routes::user_routes::*;
 use actix_web::{web, web::ServiceConfig};
 
-pub fn user_api(cfg: &mut ServiceConfig) {
+pub fn user_api_service(cfg: &mut ServiceConfig) {
     cfg.service(
         web::scope("/users")
             .service(
