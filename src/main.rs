@@ -29,7 +29,7 @@ async fn main() -> std::io::Result<()> {
     let address = format!("{}:{}", configuration.server.host, configuration.server.port);
     let listener = TcpListener::bind(address).expect("Failed to bind port");
 
-    println!("\nListening at https://{} ...", listener.local_addr().unwrap() );
+    println!("\nListening at http://{} ...", listener.local_addr().unwrap() );
 
     // run
     server(listener, /* encryption, */ result_pool, configuration)

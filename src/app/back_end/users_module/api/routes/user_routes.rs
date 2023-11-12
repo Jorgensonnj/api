@@ -87,23 +87,21 @@ pub async fn update_user(
     let pool = _get_pool(result_pool).await.unwrap();
 
     // get one user
-    let option_user = actions::read_one(pool, user_id).await;
+    let read_result = actions::read_one(pool, user_id).await;
 
-    let user = match option_user {
+    let user_vector = match read_result {
         Ok(user) => user,
-        Err(_) => {
-            // no user was found
-            tracing::error!("user_id: {} not found", &user_id);
-            return HttpResponse::NotFound().finish();
-        }
+        Err(_) => return HttpResponse::InternalServerError().finish()
     };
 
     let mut json_user = payload.into_inner();
 
-    json_user.username  = if let Some(u) = json_user.username  { Some(u) } else { Some(user.username)  };
-    json_user.password  = if let Some(p) = json_user.password  { Some(p) } else { Some(user.password)  };
-    json_user.email     = if let Some(e) = json_user.email     { Some(e) } else { Some(user.email)     };
-    json_user.discarded = if let Some(d) = json_user.discarded { Some(d) } else { Some(user.discarded) };
+    for user in user_vector.iter() {
+        json_user.username  = if let Some(u) = json_user.username  { Some(u) } else { Some(user.username.clone())  };
+        json_user.password  = if let Some(p) = json_user.password  { Some(p) } else { Some(user.password.clone())  };
+        json_user.email     = if let Some(e) = json_user.email     { Some(e) } else { Some(user.email.clone())     };
+        json_user.discarded = if let Some(d) = json_user.discarded { Some(d) } else { Some(user.discarded)         };
+    }
 
     // update user
     let update_result = actions::update(pool, user_id, json_user).await;

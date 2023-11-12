@@ -22,7 +22,7 @@ where
     let print_layer = Layer::new()
         .compact()
         .with_writer(sink)
-        .with_span_events(FmtSpan::ACTIVE);
+        .with_span_events(FmtSpan::ENTER);
 
 
    // Creates a subscriber using the filter and layer

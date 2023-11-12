@@ -20,13 +20,13 @@ pub async fn create(pool: &Pool<Postgres>, json_user: &JsonUser) -> Result<User,
    })
 }
 
-pub async fn read_one(pool: &Pool<Postgres>, user_id: i32) -> Result<User, Error> {
+pub async fn read_one(pool: &Pool<Postgres>, user_id: i32) -> Result<Vec<User>, Error> {
     sqlx::query_as!(
         User,
         "SELECT * FROM users WHERE user_id = $1",
         user_id
     )
-    .fetch_one(pool)
+    .fetch_all(pool)
     .await
     .map_err(|error| {
         tracing::error!("failed to execute read_one query: {:?}", error);
