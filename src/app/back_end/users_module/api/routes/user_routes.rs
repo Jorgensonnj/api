@@ -1,10 +1,11 @@
-use actix_web::{web::{Json, Data, Path}, HttpRequest, HttpResponse, Responder};
+use actix_web::{web::{Json, Data, Path, Query}, HttpRequest, HttpResponse, Responder};
 use super::super::{
     actions,
     super::super::shared_module::api::models::*
 };
 use sqlx::{Pool, Postgres, Error};
 use tracing::instrument;
+use std::collections::HashMap;
 
 // /users
 #[instrument]
@@ -30,17 +31,22 @@ pub async fn create_user(
 // /users
 #[instrument]
 pub async fn read_users(
-    _req: HttpRequest,
+    req: HttpRequest,
     data_pool: Data<Result<Pool<Postgres>, Error>>
 ) -> impl Responder {
     // unwrap
     let result_pool = data_pool.get_ref();
 
+    let query_map = match Query::<HashMap<String, String>>::from_query(req.query_string()) {
+        Ok(query) => query.into_inner(),
+        Err(_) => HashMap::<String, String>::new()
+    };
+
     // is there a db connection?
     let pool = _get_pool(result_pool).await.unwrap();
 
     // get all users
-    let read_result = actions::read_all(pool).await;
+    let read_result = actions::read_all(pool, &query_map).await;
 
     match read_result {
         Ok(users) => HttpResponse::Ok().json(users),
@@ -63,7 +69,7 @@ pub async fn read_user(
     let pool = _get_pool(result_pool).await.unwrap();
 
     // get user
-    let read_result = actions::read_one(pool, user_id).await;
+    let read_result = actions::read_one(pool, &user_id).await;
 
     match read_result {
         Ok(user) => HttpResponse::Ok().json(user),
@@ -87,7 +93,7 @@ pub async fn update_user(
     let pool = _get_pool(result_pool).await.unwrap();
 
     // get one user
-    let read_result = actions::read_one(pool, user_id).await;
+    let read_result = actions::read_one(pool, &user_id).await;
 
     let user_vector = match read_result {
         Ok(user) => user,

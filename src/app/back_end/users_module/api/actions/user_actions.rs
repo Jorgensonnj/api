@@ -1,5 +1,6 @@
-use sqlx::{Pool, Postgres, Error, postgres::PgQueryResult};
+use sqlx::{Pool, Execute, QueryBuilder, Postgres, Error, postgres::PgQueryResult};
 use super::super::super::super::shared_module::api::models::shared_models::*;
+use std::collections::HashMap;
 
 pub async fn create(pool: &Pool<Postgres>, json_user: &JsonUser) -> Result<User, Error> {
     sqlx::query_as!(
@@ -20,7 +21,7 @@ pub async fn create(pool: &Pool<Postgres>, json_user: &JsonUser) -> Result<User,
    })
 }
 
-pub async fn read_one(pool: &Pool<Postgres>, user_id: i32) -> Result<Vec<User>, Error> {
+pub async fn read_one(pool: &Pool<Postgres>, user_id: &i32) -> Result<Vec<User>, Error> {
     sqlx::query_as!(
         User,
         "SELECT * FROM users WHERE user_id = $1",
@@ -34,11 +35,39 @@ pub async fn read_one(pool: &Pool<Postgres>, user_id: i32) -> Result<Vec<User>, 
     })
 }
 
-pub async fn read_all(pool: &Pool<Postgres>) -> Result<Vec<User>, Error> {
-    sqlx::query_as!(
-        User,
-        "SELECT * FROM users",
-    )
+pub async fn read_all(pool: &Pool<Postgres>, query_map: &HashMap<String, String>) -> Result<Vec<User>, Error> {
+
+    let mut query_builder: QueryBuilder<Postgres> = QueryBuilder::new(
+        "SELECT * FROM users"
+    );
+
+    let username_key  = String::from("username");
+    let email_key     = String::from("email");
+    let discarded_key = String::from("discarded");
+
+    if query_map.contains_key(&username_key) ||
+       query_map.contains_key(&email_key)    ||
+       query_map.contains_key(&discarded_key)
+    {
+        query_builder.push(" WHERE ");
+        let mut seperator = query_builder.separated(" AND ");
+
+        if let Some(value) = query_map.get(&username_key){
+            seperator.push(format!("{} LIKE '%{}%'", username_key, value));
+        };
+
+        if let Some(value) = query_map.get(&"email".to_string()){
+            seperator.push(format!("{} LIKE '%{}%'", email_key, value));
+        };
+
+        if let Some(value) = query_map.get(&"discarded".to_string()){
+            seperator.push(format!("{} = '{}'", discarded_key, value));
+        };
+    }
+
+    //println!("{}",query_builder.build().sql());
+
+    sqlx::query_as::<_, User>(query_builder.build().sql())
     .fetch_all(pool)
     .await
     .map_err(|error| {
@@ -87,19 +116,3 @@ pub async fn delete(pool: &Pool<Postgres>, user_id: i32) -> Result<PgQueryResult
         error
     })
 }
-
-//pub async fn search_one(pool: &Pool<Postgres>, json_user: &JsonUser) -> Result<User, Error> {
-//    sqlx::query_as::<_, User>(
-//        "SELECT * FROM users
-//            WHERE username = $1
-//            AND email = $2"
-//        )
-//        .bind(&json_user.username)
-//        .bind(&json_user.email)
-//        .fetch_one(pool)
-//        .await
-//        .map_err(|error| {
-//            tracing::error!("failed to execute search_one query: {:?}", error);
-//            error
-//        })
-//}
