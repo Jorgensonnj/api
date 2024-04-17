@@ -20,9 +20,13 @@ pub async fn login(
     payload: Json<JsonUser>
 ) -> impl Responder {
 
-    let module_setting = data_config.get_ref().modules.get(&"auth_module".to_string());
-    let address = match module_setting {
-        Some(auth_module) => auth_module.address_string(),
+    let address = match &data_config.get_ref().modules {
+        Some(module_settings) => {
+            match module_settings.get(&"auth_module".to_string()) {
+                Some(auth_module_settings) => auth_module_settings.address_string(),
+                None => "http://localhost".to_string()
+            }
+        }
         None => "http://localhost".to_string()
     };
 

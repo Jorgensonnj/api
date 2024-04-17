@@ -20,10 +20,15 @@ async fn main() -> std::io::Result<()> {
     // encryption
     //let encryption = get_encryption( &configuration.server.key_path, &configuration.server.cert_path );
 
-    // DB connect
-    let result_pool = Pool::<Postgres>::connect(
-        &configuration.database.connection_db_string()
-    ).await;
+    // db connect if db exists
+    let connection_url = &configuration.database
+        .as_ref()
+        .map_or_else(
+            || "".to_string(),
+            |database| database.connection_db_url()
+    );
+
+    let result_pool = Pool::<Postgres>::connect(&connection_url).await;
 
     // bind
     let address = format!("{}:{}", configuration.server.host, configuration.server.port);

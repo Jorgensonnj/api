@@ -18,7 +18,13 @@ pub async fn create_user(
     let result_pool = data_pool.get_ref();
 
     // is there a db connection?
-    let pool = _get_pool(result_pool).await.unwrap();
+    let pool = match result_pool {
+        Ok(pool) => pool,
+        Err(error) => {
+            tracing::error!("no database found: {:?}", error);
+            return HttpResponse::ServiceUnavailable().finish();
+        }
+    };
 
     let create_result = actions::create(pool, &payload).await;
 
@@ -43,7 +49,13 @@ pub async fn read_users(
     };
 
     // is there a db connection?
-    let pool = _get_pool(result_pool).await.unwrap();
+    let pool = match result_pool {
+        Ok(pool) => pool,
+        Err(error) => {
+            tracing::error!("no database found: {:?}", error);
+            return HttpResponse::ServiceUnavailable().finish();
+        }
+    };
 
     // get all users
     let read_result = actions::read_all(pool, &query_map).await;
@@ -66,7 +78,13 @@ pub async fn read_user(
     let user_id     = user_id.into_inner();
 
     // is there a db connection?
-    let pool = _get_pool(result_pool).await.unwrap();
+    let pool = match result_pool {
+        Ok(pool) => pool,
+        Err(error) => {
+            tracing::error!("no database found: {:?}", error);
+            return HttpResponse::ServiceUnavailable().finish();
+        }
+    };
 
     // get user
     let read_result = actions::read_one(pool, &user_id).await;
@@ -90,7 +108,13 @@ pub async fn update_user(
     let user_id     = user_id.into_inner();
 
     // is there a db connection?
-    let pool = _get_pool(result_pool).await.unwrap();
+    let pool = match result_pool {
+        Ok(pool) => pool,
+        Err(error) => {
+            tracing::error!("no database found: {:?}", error);
+            return HttpResponse::ServiceUnavailable().finish();
+        }
+    };
 
     // get one user
     let read_result = actions::read_one(pool, &user_id).await;
@@ -130,7 +154,13 @@ pub async fn delete_user(
     let user_id     = user_id.into_inner();
 
     // is there a db connection?
-    let pool = _get_pool(result_pool).await.unwrap();
+    let pool = match result_pool {
+        Ok(pool) => pool,
+        Err(error) => {
+            tracing::error!("no database found: {:?}", error);
+            return HttpResponse::ServiceUnavailable().finish();
+        }
+    };
 
     // delete user
     let delete_result = actions::delete(pool, user_id).await;
@@ -138,19 +168,5 @@ pub async fn delete_user(
     match delete_result {
         Ok(_) => HttpResponse::Ok().finish(),
         Err(_) => HttpResponse::InternalServerError().finish()
-    }
-}
-
-// helper function
-async fn _get_pool(
-    result_pool: &Result<Pool<Postgres>, Error>
-) -> Result<&Pool<Postgres>, HttpResponse> {
-    match result_pool {
-        // no db was found
-        Ok(pool) => Ok(pool),
-        Err(error) => { 
-            tracing::error!("no database found: {:?}", error);
-            Err(HttpResponse::ServiceUnavailable().finish())
-        },
     }
 }

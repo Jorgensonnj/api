@@ -4,9 +4,9 @@ use std::collections::HashMap;
 #[derive(serde::Deserialize, Debug)]
 pub struct Settings {
     pub server: ServerSettings,
-    pub database: DatabaseSettings,
     pub telemetry: TelemetrySettings,
-    pub modules: HashMap<String, ModuleSettings>,
+    pub database: Option<DatabaseSettings>,
+    pub modules: Option<HashMap<String, ModuleSettings>>,
 }
 
 #[derive(serde::Deserialize, Debug)]
@@ -14,8 +14,8 @@ pub struct ServerSettings {
     pub driver: String,
     pub host: String,
     pub port: u16,
-    pub key_path: String,
-    pub cert_path: String,
+    pub key_path: Option<String>,
+    pub cert_path: Option<String>,
 }
 
 impl ServerSettings {
@@ -26,6 +26,48 @@ impl ServerSettings {
             self.driver,
             self.host,
             self.port,
+        )
+    }
+}
+
+#[derive(serde::Deserialize, Debug)]
+pub struct TelemetrySettings {
+    pub env_filter: String
+}
+
+#[derive(serde::Deserialize, Debug)]
+pub struct DatabaseSettings {
+    pub driver: String,
+    pub username: String,
+    pub password: String,
+    pub host: String,
+    pub port: u16,
+    pub database_name: String
+}
+
+impl DatabaseSettings {
+    // Database credential string
+    pub fn connection_db_url(&self) -> String {
+        format!(
+            "{}://{}:{}@{}:{}/{}",
+            self.driver,
+            self.username,
+            self.password,
+            self.host,
+            self.port,
+            self.database_name
+        )
+    }
+
+    // Database credential string without database name
+    pub fn connection_url(&self) -> String {
+        format!(
+            "{}://{}:{}@{}:{}/",
+            self.driver,
+            self.username,
+            self.password,
+            self.host,
+            self.port
         )
     }
 }
@@ -49,47 +91,6 @@ impl ModuleSettings {
     }
 }
 
-#[derive(serde::Deserialize, Debug)]
-pub struct DatabaseSettings {
-    pub driver: String,
-    pub username: String,
-    pub password: String,
-    pub host: String,
-    pub port: u16,
-    pub database_name: String
-}
-
-impl DatabaseSettings {
-    // Database credential string
-    pub fn connection_db_string(&self) -> String {
-        format!(
-            "{}://{}:{}@{}:{}/{}",
-            self.driver,
-            self.username,
-            self.password,
-            self.host,
-            self.port,
-            self.database_name
-        )
-    }
-
-    // Database credential string without database name
-    pub fn connection_string(&self) -> String {
-        format!(
-            "{}://{}:{}@{}:{}/",
-            self.driver,
-            self.username,
-            self.password,
-            self.host,
-            self.port
-        )
-    }
-}
-
-#[derive(serde::Deserialize, Debug)]
-pub struct TelemetrySettings {
-    pub env_filter: String
-}
 
 pub fn get_config() -> Result<Settings, ConfigError> {
 
@@ -99,7 +100,10 @@ pub fn get_config() -> Result<Settings, ConfigError> {
 
     // Build configuration
     let config = Config::builder()
-        .set_default("default", "1")?
+        .set_default("server.driver",        "http")?
+        .set_default("server.host",          "localhost")?
+        .set_default("server.port",          "8080")?
+        .set_default("telemetry.env_filter", "warn")?
         .add_source(File::new(&file_path, FileFormat::Toml))
         .build()
         .expect("Configuration failed to build");
