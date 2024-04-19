@@ -111,5 +111,5 @@ pub fn get_config() -> Result<Settings, ConfigError> {
     // Convert configuration into settings
     let convert_config: Result<Settings, ConfigError> = config.try_deserialize();
 
-    return convert_config;
+    convert_config
 }

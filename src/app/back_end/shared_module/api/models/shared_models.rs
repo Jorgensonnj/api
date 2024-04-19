@@ -22,10 +22,7 @@ pub struct JsonUser {
 
 impl JsonUser {
     pub fn get_discarded(&self) -> bool {
-        match self.discarded {
-            Some(discarded) => discarded,
-            None => false
-        }
+        self.discarded.unwrap_or(false)
     }
 }
 

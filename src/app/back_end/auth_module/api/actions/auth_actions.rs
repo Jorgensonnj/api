@@ -4,7 +4,7 @@ use std::collections::HashMap;
 
 pub async fn login_action(address: &String) -> Result<HashMap<String, String>, Error> {
 
-    let map = Client::new()
+    Client::new()
         .post(format!("{}/api/v0/logout", address))
         .send()
         .await
@@ -13,9 +13,7 @@ pub async fn login_action(address: &String) -> Result<HashMap<String, String>, E
             error
         })?
         .json::<HashMap<String, String>>()
-        .await;
-
-    map
+        .await
 }
 
 //pub async fn search_one(pool: &Pool<Postgres>, json_user: &JsonUser) -> Result<User, Error> {

@@ -28,7 +28,7 @@ async fn main() -> std::io::Result<()> {
             |database| database.connection_db_url()
     );
 
-    let result_pool = Pool::<Postgres>::connect(&connection_url).await;
+    let result_pool = Pool::<Postgres>::connect(connection_url).await;
 
     // bind
     let address = format!("{}:{}", configuration.server.host, configuration.server.port);
