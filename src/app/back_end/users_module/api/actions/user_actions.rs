@@ -1,4 +1,4 @@
-use sqlx::{Pool, Execute, QueryBuilder, Postgres, Error, postgres::PgQueryResult};
+use sqlx::{Pool, QueryBuilder, Postgres, Error, postgres::PgQueryResult};
 use super::super::super::super::shared_module::api::models::shared_models::*;
 use std::collections::HashMap;
 
@@ -53,21 +53,28 @@ pub async fn read_all(pool: &Pool<Postgres>, query_map: &HashMap<String, String>
         let mut seperator = query_builder.separated(" AND ");
 
         if let Some(value) = query_map.get(&username_key){
-            seperator.push(format!("{} LIKE '%{}%'", username_key, value));
+            seperator
+                .push(format!("{} LIKE CONCAT('%',", username_key))
+                .push_bind_unseparated(value)
+                .push_unseparated(",'%')");
         };
 
-        if let Some(value) = query_map.get(&"email".to_string()){
-            seperator.push(format!("{} LIKE '%{}%'", email_key, value));
+        if let Some(value) = query_map.get(&email_key){
+            seperator
+                .push(format!("{} LIKE CONCAT('%',", email_key))
+                .push_bind_unseparated(value)
+                .push_unseparated(",'%')");
         };
 
-        if let Some(value) = query_map.get(&"discarded".to_string()){
-            seperator.push(format!("{} = '{}'", discarded_key, value));
+        if let Some(value) = query_map.get(&discarded_key){
+            seperator
+                .push(format!("{} = CAST(", discarded_key))
+                .push_bind_unseparated(value)
+                .push_unseparated(" AS BOOLEAN)");
         };
     }
 
-    //println!("{}",query_builder.build().sql());
-
-    sqlx::query_as::<_, User>(query_builder.build().sql())
+    query_builder.build_query_as::<User>()
     .fetch_all(pool)
     .await
     .map_err(|error| {
