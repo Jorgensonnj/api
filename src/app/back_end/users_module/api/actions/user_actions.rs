@@ -54,16 +54,14 @@ pub async fn read_all(pool: &Pool<Postgres>, query_map: &HashMap<String, String>
 
         if let Some(value) = query_map.get(&username_key){
             seperator
-                .push(format!("{} LIKE CONCAT('%',", username_key))
-                .push_bind_unseparated(value)
-                .push_unseparated(",'%')");
+                .push(format!("{} LIKE ", username_key))
+                .push_bind_unseparated(format!("%{}%", value));
         };
 
         if let Some(value) = query_map.get(&email_key){
             seperator
-                .push(format!("{} LIKE CONCAT('%',", email_key))
-                .push_bind_unseparated(value)
-                .push_unseparated(",'%')");
+                .push(format!("{} LIKE ", email_key))
+                .push_bind_unseparated(format!("%{}%", value));
         };
 
         if let Some(value) = query_map.get(&discarded_key){
