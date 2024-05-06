@@ -1,0 +1,39 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="description" content="Personal Website">
+    <meta name="author" content="Nicholas Jorgenson">
+
+    <title>Website</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+
+  <body>
+
+    <div>
+      <h2>Submit Data Without A Form</h2>
+
+      <label for="username">Username:</label>
+      <input type='text' id='username' placeholder='Username...'>
+      <br>
+      <label for="password">Password:</label>
+      <input type='text' id='password' placeholder='Password...'>
+      <br>
+      <button
+        id='submit'
+        onclick="post_data('/api/v0/login', { answer: 42 }).then((data) => { console.log(data); });"
+      >Login</button>
+
+      <script src="scripts/script.js"></script>
+
+      <div id='server_response'>
+        <!-- server response -->
+      </div>
+    </div>
+
+  </body>
+</html>

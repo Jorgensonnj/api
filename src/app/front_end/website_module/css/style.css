@@ -1,11 +1,28 @@
+/* GENERAL STYLE */
+
+html {
+  font-size: 62.5%; /* 16px(default) * 0.625 = 10px(new default) */
+}
+
 body {
-  background-color: powderblue;
+  background-color: hsla(0, 0%, 22%, 1);
+  color: hsla(0, 0%, 89%, 1);
+  font-size: 1.8rem;
+  font-family: "Lucida Console", monospace;
+  margin: 0 auto;
+  max-width: 100rem;
+  padding: 4rem 1rem;
+  line-height: 1;
 }
 
-h1 {
-  color: blue;
+header {
+  display: grid;
 }
 
-p {
-  color: red;
+header a {
+  font-size: 1rem;
+  color: inherit; /* inherit color from parent */
+  white-space: pre; /* keep spaces in link */
+  text-decoration: none; /* remove underlines on links */
 }
+
