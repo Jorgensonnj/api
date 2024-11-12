@@ -19,7 +19,7 @@ actix-files = "0.6"
 rustls = "0.20"
 rustls-pemfile = "1"
 
-sqlx = {version = "0.7", features = ["runtime-tokio", "tls-native-tls", "macros", "postgres", "chrono", "migrate"]}
+sqlx = {version = "0.8", features = ["runtime-tokio", "tls-native-tls", "macros", "postgres", "chrono", "migrate"]}
 
 tracing = {version = "0.1", features = ["attributes"]}
 tracing-log = "0.1"
